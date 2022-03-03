@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome Page</title>
+  </head>
+  <body>
+    <h1>Welcome</h1>
+    <form method="post">
+        <label for="pseudo">Pseudo</label>
+        <br>
+        <input type="text" name="pseudo"
+               placeholder="player123"
+               value="{{ request.form['pseudo'] }}"></input>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <h1>Score board</h1>
+    {% for score in scores %}
+    <p>{{score['pseudo']}}: <em>{{score['points']}}</em></p>
+    {% endfor %}
+  </body>
+</html>
