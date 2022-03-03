@@ -1,0 +1,6 @@
+- [ ] visuel 
+- [ ] fonction qui colore les cases 
+- [ ] bd
+- [ ] jeu 
+- [ ] vérfication si un move est valide 
+- [ ] jeu avec enclos 

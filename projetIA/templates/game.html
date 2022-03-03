@@ -1,48 +1,64 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="../static/style.css" />
+    <script
+      src="https://kit.fontawesome.com/a473464692.js"
+      crossorigin="anonymous"
+    ></script>
     <title>Game Page</title>
   </head>
   <body>
     <h1>Game</h1>
     <p>{{player['pseudo']}}: <em>{{player['points']}} points</em></p>
-    <div id="grid">
-      <div id="c1r1"></div>
-      <div id="c1r2"></div>
-      <div id="c1r3"></div>
-      <div id="c1r4"></div>
-      <div id="c1r5"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-5 col-sm-9" id="grid">
+          <div id="c1r1"></div>
+          <div id="c1r2"></div>
+          <div id="c1r3"></div>
+          <div id="c1r4"></div>
+          <div id="c1r5"></div>
 
-      <div id="c2r1"></div>
-      <div id="c2r2"></div>
-      <div id="c2r3"></div>
-      <div id="c2r4"></div>
-      <div id="c2r5"></div>
+          <div id="c2r1"></div>
+          <div id="c2r2"></div>
+          <div id="c2r3"></div>
+          <div id="c2r4"></div>
+          <div id="c2r5"></div>
 
-      <div id="c3r1"></div>
-      <div id="c3r2"></div>
-      <div id="c3r3"></div>
-      <div id="c3r4"></div>
-      <div id="c3r5"></div>
+          <div id="c3r1"></div>
+          <div id="c3r2"></div>
+          <div id="c3r3"></div>
+          <div id="c3r4"></div>
+          <div id="c3r5"></div>
 
-      <div id="c4r1"></div>
-      <div id="c4r2"></div>
-      <div id="c4r3"></div>
-      <div id="c4r4"></div>
-      <div id="c4r5"></div>
+          <div id="c4r1"></div>
+          <div id="c4r2"></div>
+          <div id="c4r3"></div>
+          <div id="c4r4"></div>
+          <div id="c4r5"></div>
 
-      <div id="c5r1"></div>
-      <div id="c5r2"></div>
-      <div id="c5r3"></div>
-      <div id="c5r4"></div>
-      <div id="c5r5"></div>
-    </div>
-    <div id="arrows">
-      <i class="fa-solid fa-arrow-down"></i>
-      <i class="fa-solid fa-arrow-up"></i>
-      <i class="fa-solid fa-arrow-left"></i>
-      <i class="fa-solid fa-arrow-right"></i>
+          <div id="c5r1"></div>
+          <div id="c5r2"></div>
+          <div id="c5r3"></div>
+          <div id="c5r4"></div>
+          <div id="c5r5"></div>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3 col-sm-3" id="arrows">
+          <i class="fa-solid fa-arrow-down"></i>
+          <i class="fa-solid fa-arrow-up"></i>
+          <i class="fa-solid fa-arrow-left"></i>
+          <i class="fa-solid fa-arrow-right"></i>
+        </div>
+      </div>
     </div>
   </body>
 </html>
