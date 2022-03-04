@@ -1,10 +1,29 @@
 #grid {
   display: grid;
-  grid-template-rows: repeat(5, 150px);
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 15vh);
+  grid-template-columns: repeat(5, 8vw);
   grid-gap: 0.5rem;
 }
 
 #grid > * {
   background-color: #faedca;
+}
+
+.background-page{
+  background-color: #23272A;
+}
+
+.white{
+  color:whitesmoke;
+}
+nav#nav-color{
+  background-color:#5865F2;
+}
+
+.nav-link {
+  color: whitesmoke !important;
+}
+
+.navbar-brand{
+  color:whitesmoke !important;
 }
