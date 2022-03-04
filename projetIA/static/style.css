@@ -3,27 +3,50 @@
   grid-template-rows: repeat(5, 15vh);
   grid-template-columns: repeat(5, 8vw);
   grid-gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
-#grid > * {
+.neutral {
   background-color: #faedca;
 }
-
-.background-page{
-  background-color: #23272A;
+.player1 {
+  background-color: #419d78;
+}
+.player2 {
+  background-color: #8075ff;
 }
 
-.white{
-  color:whitesmoke;
+.background-page {
+  background-color: #23272a;
 }
-nav#nav-color{
-  background-color:#5865F2;
+
+.white {
+  color: whitesmoke;
+}
+nav#nav-color {
+  background-color: #5865f2;
 }
 
 .nav-link {
   color: whitesmoke !important;
 }
 
-.navbar-brand{
-  color:whitesmoke !important;
+.navbar-brand {
+  color: whitesmoke !important;
+}
+
+#arrows > * {
+  text-align: center;
+}
+
+i {
+  margin-right: 30px;
+}
+i:hover {
+  color: #5865f2;
+}
+
+#score-board {
+  margin-top: 15px;
 }

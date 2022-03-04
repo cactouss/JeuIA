@@ -1,67 +1,59 @@
-{% extends 'base.html' %}
-  {% block title %}PiGame{% endblock %}
-  {% block content %}
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-2">
-            <h1 class="white">Game</h1>
-            <p class="white">{{player['pseudo']}}: <em class="white">{{player['points']}} points</em></p>
-          </div>
-          <div class="col-md-5" id="grid">
-            <div id="c1r1"></div>
-            <div id="c1r2"></div>
-            <div id="c1r3"></div>
-            <div id="c1r4"></div>
-            <div id="c1r5"></div>
+{% extends 'base.html' %} {% block title %}PiGame{% endblock %} {% block
+content%}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <h1 class="white">Game</h1>
+      <p class="white">
+        {{player['pseudo']}}: <em class="white">{{player['points']}} points</em>
+      </p>
+    </div>
+    <div class="col-md-5" id="grid">
+      <div id="c1r1" class="player1"></div>
+      <div id="c1r2" class="neutral"></div>
+      <div id="c1r3" class="neutral"></div>
+      <div id="c1r4" class="neutral"></div>
+      <div id="c1r5" class="neutral"></div>
 
-            <div id="c2r1"></div>
-            <div id="c2r2"></div>
-            <div id="c2r3"></div>
-            <div id="c2r4"></div>
-            <div id="c2r5"></div>
+      <div id="c2r1" class="neutral"></div>
+      <div id="c2r2" class="neutral"></div>
+      <div id="c2r3" class="neutral"></div>
+      <div id="c2r4" class="neutral"></div>
+      <div id="c2r5" class="neutral"></div>
 
-            <div id="c3r1"></div>
-            <div id="c3r2"></div>
-            <div id="c3r3"></div>
-            <div id="c3r4"></div>
-            <div id="c3r5"></div>
+      <div id="c3r1" class="neutral"></div>
+      <div id="c3r2" class="neutral"></div>
+      <div id="c3r3" class="neutral"></div>
+      <div id="c3r4" class="neutral"></div>
+      <div id="c3r5" class="neutral"></div>
 
-            <div id="c4r1"></div>
-            <div id="c4r2"></div>
-            <div id="c4r3"></div>
-            <div id="c4r4"></div>
-            <div id="c4r5"></div>
+      <div id="c4r1" class="neutral"></div>
+      <div id="c4r2" class="neutral"></div>
+      <div id="c4r3" class="neutral"></div>
+      <div id="c4r4" class="neutral"></div>
+      <div id="c4r5" class="neutral"></div>
 
-            <div id="c5r1"></div>
-            <div id="c5r2"></div>
-            <div id="c5r3"></div>
-            <div id="c5r4"></div>
-            <div id="c5r5"></div>
-          </div>
-          <div class="col-md-2"></div>
-          <div class="col-md-3" id="arrows">
-            <div class="row">
-              <div class="col-md-4 align-center"></div>
-              <div class="col-md-4 align-center">
-                <i class="fa-solid fa-arrow-up white"></i>
-              </div>
-              <div class="col-md-4 align-center"></div>
-            </div>
-            <div class="row">
-              <div class="col-md-4 align-center">
-                <i class="fa-solid fa-arrow-left white"></i>
-
-              </div>
-              <div class="col-md-4 align-center">
-                <i class="fa-solid fa-arrow-down white"></i>
-                
-              </div>
-              <div class="col-md-4 align-center">
-                <i class="fa-solid fa-arrow-right white"></i>
-
-              </div>
-            </div>
-          </div>
-        </div>
+      <div id="c5r1" class="neutral"></div>
+      <div id="c5r2" class="neutral"></div>
+      <div id="c5r3" class="neutral"></div>
+      <div id="c5r4" class="neutral"></div>
+      <div id="c5r5" class="player2"></div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-3" id="arrows">
+      <div>
+        <a href="#"><i class="fa-solid fa-arrow-up white fa-3x"></i></a>
       </div>
-      {% endblock %}
+      <br />
+      <div>
+        <a href="#"><i class="fa-solid fa-arrow-left white fa-3x"></i></a>
+        <a href="#"><i class="fa-solid fa-arrow-right white fa-3x"></i></a>
+      </div>
+      <br />
+      <div>
+        <a href=""><i class="fa-solid fa-arrow-down white fa-3x"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

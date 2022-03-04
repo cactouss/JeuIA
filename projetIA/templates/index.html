@@ -1,18 +1,25 @@
-{% extends 'base.html' %}
-  {% block title %}Home{% endblock %}
-  {% block content %}
-    <h1>Welcome</h1>
-    <form method="post" class="text-white">
-        <label for="pseudo">Pseudo</label>
-        <br>
-        <input type="text" name="pseudo"
-               placeholder="player123"
-               value="{{ request.form['pseudo'] }}"></input>
-        <br>
-        <button type="submit">Submit</button>
-    </form>
-    <h1 class="text-white">Score board</h1>
-    {% for score in scores %}
-    <p class="text-white">{{score['pseudo']}}: <em>{{score['points']}}</em></p>
-    {% endfor %}
-    {% endblock %}
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content
+%}
+<h1 class="text-white">Welcome</h1>
+<form method="post" class="text-white">
+  <div class="mb-3">
+    <label for="pseudo" class="form-label">Pseudo</label>
+    <input
+      type="text"
+      class="form-control"
+      id="pseudo"
+      name="pseudo"
+      placeholder="player123"
+      value="{{ request.form['pseudo'] }}"
+    />
+  </div>
+  <button class="btn btn-primary" type="submit">Jouer</button>
+</form>
+
+<div id="score-board">
+  <h1 class="text-white">Score board</h1>
+  {% for score in scores %}
+  <p class="text-white">{{score['pseudo']}}: <em>{{score['points']}}</em></p>
+  {% endfor %}
+</div>
+{% endblock %}
