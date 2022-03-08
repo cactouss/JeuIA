@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% block title %}PiGame{% endblock %} {% block
-content%}
+{% extends 'base.html' %} {% block title %}PiGame{% endblock %}
+{% block content%}
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-3">
@@ -42,18 +42,19 @@ content%}
     <div class="col-md-1"></div>
     <div class="col-md-3" id="arrows">
       <div>
-        <a href="#"><i class="fa-solid fa-arrow-up white fa-3x"></i></a>
+        <a onclick="emitMove({'x':0,'y':-1})"><i class="fa-solid fa-arrow-up white fa-3x"></i></a>
       </div>
       <br />
       <div>
-        <a href="#"><i class="fa-solid fa-arrow-left white fa-3x"></i></a>
-        <a href="#"><i class="fa-solid fa-arrow-right white fa-3x"></i></a>
+        <a onclick="emitMove({'x':-1,'y':0})"><i class="fa-solid fa-arrow-left white fa-3x"></i></a>
+        <a onclick="emitMove({'x':1,'y':0})"><i class="fa-solid fa-arrow-right white fa-3x"></i></a>
       </div>
       <br />
       <div>
-        <a href=""><i class="fa-solid fa-arrow-down white fa-3x"></i></a>
+        <a onclick="emitMove({'x':0,'y':1})"><i class="fa-solid fa-arrow-down white fa-3x"></i></a>
       </div>
     </div>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 {% endblock %}
