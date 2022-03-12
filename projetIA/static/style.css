@@ -10,11 +10,18 @@
 .neutral {
   background-color: #faedca;
 }
+
 .player1 {
   background-color: #419d78;
 }
 .player2 {
   background-color: #8075ff;
+}
+.player1Current {
+  background-color: #11da89;
+}
+.player2Current {
+  background-color: #4332fa;
 }
 
 .background-page {

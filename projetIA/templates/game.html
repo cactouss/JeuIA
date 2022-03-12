@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% block title %}PiGame{% endblock %}
-{% block content%}
+{% extends 'base.html' %} {% block title %}PiGame{% endblock %} {% block
+content%}
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-3">
@@ -9,7 +9,7 @@
       </p>
     </div>
     <div class="col-md-5" id="grid">
-      <div id="c1r1" class="player1"></div>
+      <div id="c1r1" class="player1Current"></div>
       <div id="c1r2" class="neutral"></div>
       <div id="c1r3" class="neutral"></div>
       <div id="c1r4" class="neutral"></div>
@@ -37,24 +37,36 @@
       <div id="c5r2" class="neutral"></div>
       <div id="c5r3" class="neutral"></div>
       <div id="c5r4" class="neutral"></div>
-      <div id="c5r5" class="player2"></div>
+      <div id="c5r5" class="player2Current"></div>
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-3" id="arrows">
       <div>
-        <a onclick="emitMove({'x':0,'y':-1})"><i class="fa-solid fa-arrow-up white fa-3x"></i></a>
+        <a onclick="emitMove({'x':0,'y':-1})"
+          ><i class="fa-solid fa-arrow-up white fa-3x"></i
+        ></a>
       </div>
       <br />
       <div>
-        <a onclick="emitMove({'x':-1,'y':0})"><i class="fa-solid fa-arrow-left white fa-3x"></i></a>
-        <a onclick="emitMove({'x':1,'y':0})"><i class="fa-solid fa-arrow-right white fa-3x"></i></a>
+        <a onclick="emitMove({'x':-1,'y':0})"
+          ><i class="fa-solid fa-arrow-left white fa-3x"></i
+        ></a>
+        <a onclick="emitMove({'x':1,'y':0})"
+          ><i class="fa-solid fa-arrow-right white fa-3x"></i
+        ></a>
       </div>
       <br />
       <div>
-        <a onclick="emitMove({'x':0,'y':1})"><i class="fa-solid fa-arrow-down white fa-3x"></i></a>
+        <a onclick="emitMove({'x':0,'y':1})"
+          ><i class="fa-solid fa-arrow-down white fa-3x"></i
+        ></a>
       </div>
     </div>
   </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+  integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+  crossorigin="anonymous"
+></script>
 {% endblock %}
