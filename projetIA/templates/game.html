@@ -9,64 +9,66 @@ content%}
       </p>
     </div>
     <div class="col-md-5" id="grid">
-      <div id="c1r1" class="player1Current"></div>
-      <div id="c1r2" class="neutral"></div>
-      <div id="c1r3" class="neutral"></div>
-      <div id="c1r4" class="neutral"></div>
-      <div id="c1r5" class="neutral"></div>
-
-      <div id="c2r1" class="neutral"></div>
-      <div id="c2r2" class="neutral"></div>
-      <div id="c2r3" class="neutral"></div>
-      <div id="c2r4" class="neutral"></div>
+      <div id="c1r5" class="player1Current"></div>
       <div id="c2r5" class="neutral"></div>
-
-      <div id="c3r1" class="neutral"></div>
-      <div id="c3r2" class="neutral"></div>
-      <div id="c3r3" class="neutral"></div>
-      <div id="c3r4" class="neutral"></div>
       <div id="c3r5" class="neutral"></div>
-
-      <div id="c4r1" class="neutral"></div>
-      <div id="c4r2" class="neutral"></div>
-      <div id="c4r3" class="neutral"></div>
-      <div id="c4r4" class="neutral"></div>
       <div id="c4r5" class="neutral"></div>
+      <div id="c5r5" class="neutral"></div>
 
-      <div id="c5r1" class="neutral"></div>
-      <div id="c5r2" class="neutral"></div>
-      <div id="c5r3" class="neutral"></div>
+      <div id="c1r4" class="neutral"></div>
+      <div id="c2r4" class="neutral"></div>
+      <div id="c3r4" class="neutral"></div>
+      <div id="c4r4" class="neutral"></div>
       <div id="c5r4" class="neutral"></div>
-      <div id="c5r5" class="player2Current"></div>
+
+      <div id="c1r3" class="neutral"></div>
+      <div id="c2r3" class="neutral"></div>
+      <div id="c3r3" class="neutral"></div>
+      <div id="c4r3" class="neutral"></div>
+      <div id="c5r3" class="neutral"></div>
+
+      <div id="c1r2" class="neutral"></div>
+      <div id="c2r2" class="neutral"></div>
+      <div id="c3r2" class="neutral"></div>
+      <div id="c4r2" class="neutral"></div>
+      <div id="c5r2" class="neutral"></div>
+
+      <div id="c1r1" class="neutral"></div>
+      <div id="c2r1" class="neutral"></div>
+      <div id="c3r1" class="neutral"></div>
+      <div id="c4r1" class="neutral"></div>
+      <div id="c5r1" class="player2Current"></div>
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-3" id="arrows">
       <div>
-        <a onclick="emitMove({'x':0,'y':-1})"
+        <a onclick="handleMove('up')"
           ><i class="fa-solid fa-arrow-up white fa-3x"></i
         ></a>
       </div>
       <br />
       <div>
-        <a onclick="emitMove({'x':-1,'y':0})"
+        <a onclick="handleMove('left')"
           ><i class="fa-solid fa-arrow-left white fa-3x"></i
         ></a>
-        <a onclick="emitMove({'x':1,'y':0})"
+        <a onclick="handleMove('right')"
           ><i class="fa-solid fa-arrow-right white fa-3x"></i
         ></a>
       </div>
       <br />
       <div>
-        <a onclick="emitMove({'x':0,'y':1})"
+        <a onclick="handleMove('down')"
           ><i class="fa-solid fa-arrow-down white fa-3x"></i
         ></a>
       </div>
     </div>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
   integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
   crossorigin="anonymous"
 ></script>
+<script type="text/javascript" src="../static/script.js" defer></script>
 {% endblock %}
