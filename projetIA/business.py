@@ -9,9 +9,9 @@ def get_new_position(position,move_str,game_board):
     move['y']+= position['y']
 
     if(move['x'] != position['x']):
-        is_in_board(move['x'], len(game_board[0]))
+        point_is_in_board(move['x'], len(game_board[0]))
     else:
-        is_in_board(move['y'], len(game_board))
+        point_is_in_board(move['y'], len(game_board))
 
     return move
 
@@ -26,7 +26,7 @@ def update_board(position, game_board,player):
 
     return game_board
 
-def is_in_board(position,board_size):
+def point_is_in_board(position,board_size):
     if position < 0 or position >= board_size:
         raise Exception("Move out of board")
 
@@ -84,22 +84,12 @@ def handle_move(move,position,board,player):
     # 2 update board
     board_list = update_board(new_position,board_list,player)
     # 3 enclos
+    board_list, captured_positions = enclosure(board_list,player)
     # 4 game finish
     is_finished = is_game_finished(board_list)
-
-    return new_position,parser_string(board_list),is_finished
-    # is_valid,new_position = valid_move(position,move,board_list,player)
-    # captured_positions = []
-    # if is_valid:
-    #     print(new_position['y'])
-    #     board_list[new_position['y']][new_position['x']] = player
-    #     captured_positions = enclosure(new_position,board_list)
-    #     for i in range(len(captured_positions)):
-    #         board[captured_positions[i]['y']][captured_positions[i]['x']] = player
-    # else:
-    #     return False,parser_string(board_list),[],new_position
-    # return True,parser_string(board_list),captured_positions,new_position
     
+    return new_position,parser_string(board_list),captured_positions,is_finished
+
 def is_game_finished(board):
     for i in range(len(board)):
         for j in range(len(board[i])):
@@ -107,3 +97,94 @@ def is_game_finished(board):
                 return False
     return True
 
+# prend en compte les bords donc min = -1 et max = 5
+def find_sommets(board,player,x,y):
+    y_min = None
+    x_max = None
+    x_min = None
+
+    y_max = y + 1
+    while y_max < 5:
+        if board[y_max][x] == player:
+            break
+        elif board[y_max][x] == 0:
+            y_max += 1
+        else:#si autre joueur
+            y_max = None
+            break
+
+    if(y_max is None): return y_max,y_min,x_max,x_min 
+    y_min = y - 1
+    while y_min > -1:
+        if board[y_min][x] == player:
+            break
+        elif board[y_min][x] == 0:
+            y_min -= 1
+        else:#si autre joueur
+            y_min = None
+            break
+
+    if(y_min is None): return y_max,y_min,x_max,x_min 
+    x_max = x + 1
+    while x_max < 5:
+        if board[y][x_max] == player:
+            break
+        elif board[y][x_max] == 0:
+            x_max += 1
+        else:#si autre joueur
+            x_max = None
+            break
+
+    if(x_max is None): return y_max,y_min,x_max,x_min 
+    x_min = x - 1
+    while x_min > -1:
+        if board[y][x_min] == player:
+            break
+        elif board[y][x_min] == 0:
+            x_min -= 1
+        else:#si autre joueur
+            x_min = None
+            break
+    return y_max,y_min,x_max,x_min
+
+def enclosure(board,player):
+    captured_positions = []
+    for y in range(len(board)):
+        for x  in range(len(board[y])):
+            if board[y][x] == 0 :
+                y_max,y_min,x_max,x_min = find_sommets(board,player,x,y)
+                if y_max is not None and y_min is not None and x_max is not None and x_min is not None:
+                    board, new_captured_positions = rectangle(x_min, x_max, y_min, y_max, board, player)
+                    captured_positions.extend(new_captured_positions)
+    return board,captured_positions
+
+def rectangle(x_min,x_max,y_min,y_max,board,player):
+    x = x_min
+    y = y_min
+    copied_board = board
+    captured_positions = []
+    while x <= x_max:
+        while y <= y_max:
+            if x == x_min or x == x_max or y == y_max or y == y_min:
+                if position_is_in_board(board,x,y) and board[y][x] != player:
+                    captured_positions.clear()
+                    return board,captured_positions
+            else:
+                if board[y][x] != player and board[y][x] != 0:
+                    captured_positions.clear()
+                    return board,captured_positions
+                else:
+                    copied_board[y][x] != player
+                    captured_positions.append({'x':x,'y':y})
+            y+=1
+        y = y_min
+        x += 1
+    return copied_board,captured_positions
+
+def position_is_in_board(game_board,x,y):
+    try:
+        point_is_in_board(x, len(game_board[0]))
+        point_is_in_board(y, len(game_board))
+        return True
+    except:
+        return False
