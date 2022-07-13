@@ -4,7 +4,11 @@ async function handleMove(move) {
     if (reponse.data.isFinished) {
       window.location.href = "http://127.0.0.1:5000/result";
     } else {
-      updateBoardColors("player2", reponse.data.newPosition);
+      updateBoardColors(
+        "player2",
+        reponse.data.newPosition,
+        reponse.data.capturedPositions
+      );
       await getMove();
     }
   } catch (err) {
@@ -13,7 +17,15 @@ async function handleMove(move) {
   }
 }
 
-function updateBoardColors(player, newPosition) {
+function updateBoardColors(player, newPosition, capturedPositions) {
+  console.log("cap");
+  console.log(capturedPositions);
+  if (capturedPositions)
+    capturedPositions.forEach((pos) => {
+      document
+        .getElementById(`c${pos.x + 1}r${pos.y + 1}`)
+        .classList.add(player);
+    });
   document.getElementsByClassName(player + "Current")[0].classList.add(player);
   document
     .getElementsByClassName(player + "Current")[0]
