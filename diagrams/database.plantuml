@@ -1,0 +1,39 @@
+@startuml database
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "Player" {
+  *id : number <<generated>>
+  --
+  *pseudo : text
+}
+
+entity "GameBoard" {
+  *id : number <<generated>>
+  --
+  *size: number
+}
+
+entity "Move"  {
+  *id : number <<generated>>
+  --
+  *game: number
+  *player: number
+  *number: number
+  
+}
+
+entity "Position"{
+  *id : number <<generated>>
+  --
+  *x: number
+  *y : number
+}
+Player}o..o{ GameBoard
+Move }o..|| Position
+Move }o..|| Player
+Move }o..o| GameBoard
+@enduml

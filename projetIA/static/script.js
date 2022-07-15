@@ -18,8 +18,6 @@ async function handleMove(move) {
 }
 
 function updateBoardColors(player, newPosition, capturedPositions) {
-  console.log("cap");
-  console.log(capturedPositions);
   if (capturedPositions)
     capturedPositions.forEach((pos) => {
       document
@@ -41,7 +39,11 @@ async function getMove() {
     if (reponse.data.isFinished) {
       window.location.href = "http://127.0.0.1:5000/result";
     } else {
-      updateBoardColors("player1", reponse.data.newPosition);
+      updateBoardColors(
+        "player1",
+        reponse.data.newPosition,
+        reponse.data.capturedPositions
+      );
     }
   } catch (err) {
     console.log(err);
