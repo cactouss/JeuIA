@@ -166,9 +166,26 @@ def rectangle(x_min,x_max,y_min,y_max,board,player):
     while x <= x_max:
         while y <= y_max:
             if x == x_min or x == x_max or y == y_max or y == y_min:
-                if position_is_in_board(board,x,y) and board[y][x] != player:
-                    captured_positions.clear()
-                    return board,captured_positions
+                if position_is_in_board(board,x,y):
+                    if board[y][x] == 0:
+                        new_x = x 
+                        new_y = y 
+                        if x == x_min : new_x -= 1
+                        if x == x_max : new_x += 1
+                        if y == y_min : new_y -= 1
+                        if y == y_max : new_y += 1
+                        is_corner = new_x != x and new_y != y
+                        if not is_corner:
+                            if position_is_in_board(board,new_x,new_y) and board[new_y][new_x] != player:
+                                captured_positions.clear()
+                                return board,captured_positions
+                            else: 
+                                captured_positions.append({'x':x,'y':y})
+
+                    elif board[y][x] != player:
+                        captured_positions.clear()
+                        return board,captured_positions
+
             else:
                 if board[y][x] != player and board[y][x] != 0:
                     captured_positions.clear()
