@@ -3,6 +3,8 @@ from typing import List
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, session, jsonify
 from uuid import uuid4
 from random import Random, randint
+
+import werkzeug
 from .business import *
 
 app = Flask(__name__)
@@ -43,7 +45,12 @@ def move():
 		if not move:
 			raise Exception("Move is required")
 		else:
-			return do_move(move, 'player2pos', 2);
+			try:
+				return do_move(move, 'player2pos', 2);
+			except Exception as e:
+				return handle_500(e)
+			
+				
 
 	if request.method == 'GET':
 		is_valid = False
@@ -54,12 +61,13 @@ def move():
 				is_valid = True
 				print(move," is ok")	
 			except Exception as err:
-				print("error ", move, " : ", err)
+				print("")
 		return result
 
 def do_move(move,player_pos,player):
 	try : 
 		new_position, board, captured_positions, is_finished = handle_move(move,session[player_pos],session['board'],player);
+		print(f"new position : {new_position} , board : {board} , captured_positions : {captured_positions} , is_finished : {is_finished}")
 		session['board'] = board
 		session[player_pos] = new_position	
 		return {"newPosition":new_position,"isFinished":is_finished, "board":board,"capturedPositions":captured_positions}
@@ -69,3 +77,12 @@ def do_move(move,player_pos,player):
 @app.route('/result', methods=['GET'])
 def result():
 	return render_template('result.html',player=session['pseudo'],board = session['board'])
+
+
+@app.errorhandler(werkzeug.exceptions.InternalServerError)
+def handle_500(error):
+	return 'Bad Move', 500
+
+
+
+
