@@ -1,4 +1,3 @@
-from mimetypes import init
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, session, jsonify
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25506'
@@ -8,7 +7,7 @@ import werkzeug
 
 from .business import *
 from .train import train_ai
-from .models import init_db
+from .models import init_db,db
 
 
 from uuid import uuid4
