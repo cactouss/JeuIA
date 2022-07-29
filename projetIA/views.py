@@ -1,15 +1,20 @@
-import imp
-from typing import List
+from mimetypes import init
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, session, jsonify
-from uuid import uuid4
-from random import Random, randint
-
-import werkzeug
-from .business import *
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25506'
 app.config.from_object('config')
+
+import werkzeug
+
+from .business import *
+from .train import train_ai
+from .models import init_db
+
+
+from uuid import uuid4
+
+
+
 
 min = 0
 max = 4
@@ -65,7 +70,7 @@ def move():
 		return result
 
 def do_move(move,player_pos,player):
-	try : 
+	try :
 		new_position, board, captured_positions, is_finished = handle_move(move,session[player_pos],session['board'],player);
 		print(f"new position : {new_position} , board : {board} , captured_positions : {captured_positions} , is_finished : {is_finished}")
 		session['board'] = board
@@ -78,6 +83,11 @@ def do_move(move,player_pos,player):
 def result():
 	return render_template('result.html',player=session['pseudo'],board = session['board'])
 
+@app.route('/train', methods=['GET'])
+def train():
+	init_db()
+	train_ai()
+	return handle_500("Training en cours")
 
 @app.errorhandler(werkzeug.exceptions.InternalServerError)
 def handle_500(error):

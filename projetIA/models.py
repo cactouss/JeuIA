@@ -1,9 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
+from traitlets import default
 from .views import app
+from flask_sqlalchemy import SQLAlchemy
 import logging as lg
 
-db = SQLAlchemy(app)
 
+db = SQLAlchemy(app)
 def init_db():
     db.drop_all()
     db.create_all()
@@ -19,6 +20,7 @@ def init_db():
     db.session.add(p2)
     db.session.commit()
 
+
 	# définition des modèles
 class Player(db.Model):
     user_name = db.Column(db.String(200), primary_key=True)
@@ -33,7 +35,7 @@ class Player(db.Model):
         return self.user_name
 
 class Game(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     board = db.Column(db.String(200), nullable=False)
     player_1 = db.Column(db.String(200), db.ForeignKey('player.user_name'))
     player_2 = db.Column(db.String(200), db.ForeignKey('player.user_name'))
@@ -51,18 +53,21 @@ class Game(db.Model):
         
 
 class Q_table(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    q_up = db.Column(db.Float, nullable=False)
-    q_down = db.Column(db.Float, nullable=False)
-    q_left = db.Column(db.Float, nullable=False)
-    q_right = db.Column(db.Float, nullable=False)
+    id = db.Column(db.String(200), primary_key=True)
+    q_up = db.Column(db.Float, nullable=False,default=0)
+    q_down = db.Column(db.Float, nullable=False,default=0)
+    q_left = db.Column(db.Float, nullable=False,default=0)
+    q_right = db.Column(db.Float, nullable=False,default=0)
 
     def __init__(self,id):
-        id = id
+        self.id = id
         self.q_up = 0
         self.q_down = 0
         self.q_left = 0
         self.q_right = 0
 
+    def getId(self):
+        return self.id
+        
     def Q_values (self):
         return [self.q_up, self.q_down, self.q_left, self.q_right]

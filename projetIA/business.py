@@ -4,7 +4,10 @@ from turtle import pos, position
 from sqlalchemy import true
 
 def get_new_position(position,move_str,game_board):
+    print(move_str)
     move = convert_move_str_to_object(move_str)
+    print(type(move['x']))
+    #Erreur ici string indices must be integers ?
     move['x']+= position['x']
     move['y']+= position['y']
 
@@ -52,6 +55,7 @@ def convert_move_str_to_object(move):
     elif move == 'right':
         position['x'] = 1
     else :
+        print("Error : move not recognized")
         raise Exception("Unknown move")
     return position
         
@@ -77,8 +81,8 @@ def enclosure(position,board):
     return []
 
 def handle_move(move,position,board,player):
+
     board_list = parse_list(board)
-    print(position)
     # 1 new position
     new_position = get_new_position(position,move,board_list)
     # 2 update board
