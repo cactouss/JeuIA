@@ -43,12 +43,12 @@ class Game(db.Model):
     current_player = db.Column(db.Integer, nullable=False)
 
     def __init__(self,board,player_1,player_2,player_1_pos,player_2_pos,current_player):
-        self.board = board
-        self.player_1 = str(player_1)
-        self.player_2 = str(player_2)
+        self.board = str(board)
+        self.player_1 = player_1
+        self.player_2 = player_2
         self.player_1_pos = str(player_1_pos)
         self.player_2_pos = str(player_2_pos)
-        self.current_player = str(current_player)
+        self.current_player = current_player
         
 
 class Q_table(db.Model):

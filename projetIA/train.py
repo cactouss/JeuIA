@@ -35,24 +35,26 @@ def train_ai(nb_games = 1):
     actions = ['up','down','left','right']
     p1 = Player.query.get('AI1')
     p2 = Player.query.get('AI2')
-    game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,str({'x':0,'y':4}),str({'x':4,'y':0}),1)
+    game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,{'x':0,'y':4},{'x':4,'y':0},1)
     db.session.add(game)
     db.session.commit()
+    nb_move = 0
     for _ in range(nb_games):
         is_finished = False
         #timer 
         start_time = time.time()
         while not is_finished:
             old_board = game.board
-            new_position,new_board,is_finished = step(game.board,game.current_player,ast.literal_eval(game.player_1_pos if game.current_player == 1 else game.player_2_pos),0.4)
-            new_position_enemy , new_boardT1,is_finished = step(game.board,2 if game.current_player == 1 else 1,ast.literal_eval(game.player_1_pos if game.current_player == 1 else game.player_2_pos),0.0)
+            new_position,new_board,is_finished = step(game.board,game.current_player,ast.literal_eval(game.player_1_pos if game.current_player == 1 else game.player_2_pos),0.4,is_finished)
+            new_position_enemy , new_boardT1,is_finished = step(game.board,2 if game.current_player == 1 else 1,ast.literal_eval(game.player_1_pos if game.current_player == 1 else game.player_2_pos),0.0,is_finished)
             game.board = new_board
             if game.current_player == 1:
-                game.player_1_pos = new_position
+                game.player_1_pos = str(new_position)
             else:
-                game.player_2_pos = new_position
+                game.player_2_pos = str(new_position)
             game.current_player = 2 if game.current_player == 1 else 1
-            print("moved")
+            print("moved",nb_move)
+            nb_move += 1
 
 
             
@@ -66,14 +68,14 @@ def train_ai(nb_games = 1):
 
 
 
-def step(board,player,player_pos,eps):
-    move_tried = 0
+def step(board,player,player_pos,eps,is_finished):
+    new_board = copy.deepcopy(board)
     new_position = player_pos
-    move_not_valid = []
+    move_not_valid = set([])
     move = ""
-    while new_position == player_pos:
+    while new_position == player_pos and not is_finished:
         try:
-            
+            print(move_not_valid)
             if len(move_not_valid) >= 1:
                 move = take_action(board,player_pos,player_pos,player,1.0)
             else:
@@ -81,11 +83,16 @@ def step(board,player,player_pos,eps):
             new_position,new_board,captured_position,is_finished  = handle_move(actions[move],player_pos,board,player)
         except Exception as err:
             print(err)
-            #si je le mets pas j'ai une erreur en mode y a besoin d'un roll back car il y a eu une erreur 
-            # et mnt j'ai ça qlite3.InterfaceError) Error binding parameter 1 - probably unsupported type
-            db.session.rollback()
-            move_not_valid.append(move)
+            print(board)
+            move_not_valid.add(move)
             player_pos = new_position
+        if len(move_not_valid) >= 4:
+            for move in move_not_valid:
+                try: 
+                    new_position,new_board,captured_position,is_finished  = handle_move(actions[move],player_pos,board,player)
+                except Exception as err:
+                    print(err)
+        
 
     return new_position,new_board,is_finished
 
