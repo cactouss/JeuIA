@@ -26,7 +26,7 @@ def take_action(board,player_1_pos,player_2_pos,current_player, eps):
         action = 0
     return action
 
-def train_ai(nb_games = 1):
+def train_ai(nb_games = 10):
     global eps 
     eps = 0.9
     """
@@ -45,16 +45,14 @@ def train_ai(nb_games = 1):
         start_time = time.time()
         while not is_finished:
             old_board = game.board
-            new_position,new_board,is_finished = step(game.board,game.current_player,ast.literal_eval(game.player_1_pos if game.current_player == 1 else game.player_2_pos),0.4,is_finished)
-            new_position_enemy , new_boardT1,is_finished = step(game.board,2 if game.current_player == 1 else 1,ast.literal_eval(game.player_1_pos if game.current_player == 1 else game.player_2_pos),0.0,is_finished)
+            new_position,new_board,is_finished = step(game.board,game.current_player,ast.literal_eval(game.player_1_pos),ast.literal_eval(game.player_2_pos),0.4,is_finished)
+            new_position_enemy , new_boardT1,is_finished = step(game.board,2 if game.current_player == 1 else 1,ast.literal_eval(game.player_1_pos),ast.literal_eval(game.player_2_pos),0.0,is_finished)
             game.board = new_board
             if game.current_player == 1:
                 game.player_1_pos = str(new_position)
             else:
                 game.player_2_pos = str(new_position)
             game.current_player = 2 if game.current_player == 1 else 1
-            print("moved",nb_move)
-            nb_move += 1
 
 
             
@@ -68,30 +66,24 @@ def train_ai(nb_games = 1):
 
 
 
-def step(board,player,player_pos,eps,is_finished):
-    new_board = copy.deepcopy(board)
-    new_position = player_pos
+def step(board,player,player_1_pos,player_2_pos,eps,is_finished):
+    new_board = board
+    new_position = player_1_pos if player == 1 else player_2_pos
+    player_pos = new_position
     move_not_valid = set([])
     move = ""
     while new_position == player_pos and not is_finished:
         try:
-            print(move_not_valid)
+
             if len(move_not_valid) >= 1:
-                move = take_action(board,player_pos,player_pos,player,1.0)
+                move = take_action(board,player_1_pos,player_2_pos,player,1.0)
             else:
-                move = take_action(board,player_pos,player_pos,player,eps)
-            new_position,new_board,captured_position,is_finished  = handle_move(actions[move],player_pos,board,player)
+                move = take_action(board,player_1_pos,player_2_pos,player,eps)
+            new_position,new_board,captured_position,is_finished  = handle_move(actions[move],player_1_pos if player == 1 else player_2_pos,board,player)
         except Exception as err:
-            print(err)
-            print(board)
             move_not_valid.add(move)
-            player_pos = new_position
-        if len(move_not_valid) >= 4:
-            for move in move_not_valid:
-                try: 
-                    new_position,new_board,captured_position,is_finished  = handle_move(actions[move],player_pos,board,player)
-                except Exception as err:
-                    print(err)
+            player_pos = player_1_pos if player == 1 else player_2_pos
+
         
 
     return new_position,new_board,is_finished
