@@ -6,8 +6,7 @@ import copy
 import ast
 #import time
 import time
-LEARNING_RATE = 0.1 
-GAMMA = 0.9
+
 NB_GAEMES_EXPLORATION = 5000
 actions = ['up','down','left','right']
 def espylon_greedy(eps,gameId):
