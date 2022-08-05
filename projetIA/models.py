@@ -1,7 +1,8 @@
 from .views import app
 from flask_sqlalchemy import SQLAlchemy
 import logging as lg
-
+LEARNING_RATE = 0.1 
+GAMMA = 0.9
 
 db = SQLAlchemy(app,session_options={"autoflush": False})
 def init_db():
@@ -83,10 +84,8 @@ class Q_table(db.Model):
         return max(self.Q_values())
 
     def update(action,reward,reward_max_new_state):
-        alpha = 0.8
-        gamma = 0.9
         q_value = self.Q_values[action]
-        q_value += alpha * (reward + gamma *reward_max_new_state - q_value)
+        q_value += LEARNING_RATE * (reward + GAMMA *reward_max_new_state - q_value)
 
         if action == 1 : self.q_up = q_value
         if action == 2 : self.q_down = q_value
