@@ -86,16 +86,27 @@ def handle_move(move,position,board,player):
     # 3 enclos
     board_list, captured_positions = enclosure(board_list,player)
     # 4 game finish
-    is_finished = is_game_finished(board_list)
+    is_finished,winner = is_game_finished(board_list)
     
-    return new_position,parser_string(board_list),captured_positions,is_finished
+    return new_position,parser_string(board_list),captured_positions,is_finished,winner
 
 def is_game_finished(board):
+    p1 = 0
+    p2 = 0
     for i in range(len(board)):
         for j in range(len(board[i])):
-            if board[i][j] == 0:
-                return False
-    return True
+            value = board[i][j]
+            if value == 0:
+                return False, 0
+            
+            if value == 1:
+                p1 += 1
+            else:
+                p2 += 1
+    
+    if p1 == p2 : return True, 0 
+    if p1 > p2 : return True,1 
+    return True, 2
 
 # prend en compte les bords donc min = -1 et max = 5
 def find_sommets(board,player,x,y):

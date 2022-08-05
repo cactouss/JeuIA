@@ -1,6 +1,4 @@
 import random
-from re import M
-import numpy as np
 from requests import session
 from .business import *
 from .models import *
@@ -15,16 +13,17 @@ actions = ['up','down','left','right']
 def espylon_greedy(eps,gameId):
     return eps if gameId < NB_GAEMES_EXPLORATION else eps * 0.995
 
-def take_action(board,player_1_pos,player_2_pos,current_player, eps):
-    """
-    Take an action according to the epsilon-greedy policy
-    """
-    if random.uniform(0, 1) < eps:
-        action = random.randint(0,3)
-    else:
-        #TODO: Get the qTable value for the current state -> board + posPlayer1 + posPlayer2
-        action = 0
-    return action
+# def take_action(board,player_1_pos,player_2_pos,current_player, eps):
+#     """
+#     Take an action according to the epsilon-greedy policy
+#     """
+#     if random.uniform(0, 1) < eps:
+#         action = random.randint(0,3)
+#     else:
+        
+#         #TODO: Get the qTable value for the current state -> board + posPlayer1 + posPlayer2
+#         action = 0
+#     return action
 
 def train_ai(nb_games = 10):
     global eps 
@@ -79,12 +78,26 @@ def step(board,player,player_1_pos,player_2_pos,eps,is_finished):
                 move = take_action(board,player_1_pos,player_2_pos,player,1.0)
             else:
                 move = take_action(board,player_1_pos,player_2_pos,player,eps)
-            new_position,new_board,captured_position,is_finished  = handle_move(actions[move],player_1_pos if player == 1 else player_2_pos,board,player)
+            new_position,new_board,captured_position,is_finished,winner  = handle_move(actions[move],player_1_pos if player == 1 else player_2_pos,board,player)
+            
+            q_table_old = get_q_table(board, player_1_pos, player_2_pos, current_player)
+            
+            if player == 1 : player_1_pos = new_position
+            else : player_2_pos = new_position
+
+            q_table_new = get_q_table(board, player_1_pos, player_2_pos, current_player)
+            reward_max = q_table_new.get_max_expected_reward()
+            reward = len(captured_position)
+
+            if winner != 0:
+                if winner == player: reward += 10
+                else : reward -= 10
+                
+            q_table_old.update(move,reward,reward_max)
+
         except Exception as err:
             move_not_valid.add(move)
             player_pos = player_1_pos if player == 1 else player_2_pos
-
-        
 
     return new_position,new_board,is_finished
 
@@ -92,15 +105,18 @@ def take_action(board,player_1_pos,player_2_pos,current_player,eps):
     if random.uniform(0, 1) < eps:
         return random.randint(0,3)
     else:
-        actions = Q_table.query.get(board + str(player_1_pos) + str(player_2_pos) + str(current_player))
-        if actions is None:
-            db.session.add(Q_table(board+str(player_1_pos)+str(player_2_pos)+str(current_player)))
-            db.session.commit()
-            return random.randint(0,3)
-        else:
-            return int(np.max(actions.Q_values()))
+        q_table = get_q_table(board, player_1_pos, player_2_pos, current_player)
+        return q_table.get_best_action()
 
 
+def get_q_table(board,player_1_pos,player_2_pos,current_player):
+    q_table = Q_table.query.get(board + str(player_1_pos) + str(player_2_pos) + str(current_player))
+    if q_table is None:
+        db.session.add(Q_table(board+str(player_1_pos)+str(player_2_pos)+str(current_player)))
+        db.session.commit()
+        return Q_table.query.get(board + str(player_1_pos) + str(player_2_pos) + str(current_player));
+    
+    return q_table
 
 
 
@@ -196,7 +212,7 @@ def take_action(board,player_1_pos,player_2_pos,current_player,eps):
 #     old_board = copy.copy(board)
 #     new_player_pos = copy.copy(old_player_pos)
 #     while old_player_pos == new_player_pos:
-#         new_player_pos,new_board,captured_positions,is_finished = handle_move(actions[action],old_player_pos,old_board,current_player)
+#         new_player_pos,new_board,captured_positions,is_finished,winner = handle_move(actions[action],old_player_pos,old_board,current_player)
 #     if is_finished:
 #         raise Exception("Game finished")
 #     return new_board, new_player_pos

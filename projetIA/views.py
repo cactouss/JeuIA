@@ -70,7 +70,7 @@ def move():
 
 def do_move(move,player_pos,player):
 	try :
-		new_position, board, captured_positions, is_finished = handle_move(move,session[player_pos],session['board'],player);
+		new_position, board, captured_positions, is_finished, winner = handle_move(move,session[player_pos],session['board'],player);
 		print(f"new position : {new_position} , board : {board} , captured_positions : {captured_positions} , is_finished : {is_finished}")
 		session['board'] = board
 		session[player_pos] = new_position	
