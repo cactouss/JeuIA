@@ -1,14 +1,17 @@
+from mimetypes import init
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, session, jsonify
+from flask_sock import Sock
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25506'
 app.config.from_object('config')
-
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+sock = Sock(app)
 import werkzeug
 
 from .business import *
-from .train import train_ai
+from .train import train_ai,take_action
 from .models import init_db,db
-
+actions = ['up','down','left','right']
 
 from uuid import uuid4
 
@@ -60,8 +63,9 @@ def move():
 		is_valid = False
 		while not is_valid:
 			try : 
-				move = random_move()
-				result = do_move(move, 'player1pos', 1);
+				move = take_action(session['board'],session['player1pos'],session['player2pos'],1,1.0)
+				print(move)
+				result = do_move(actions[move], 'player1pos', 1);
 				is_valid = True
 				print(move," is ok")	
 			except Exception as err:
@@ -82,11 +86,18 @@ def do_move(move,player_pos,player):
 def result():
 	return render_template('result.html',player=session['pseudo'],board = session['board'])
 
+@sock.route('/trainSocket', methods=['GET'])
+def train(ws):
+	while True :
+		if ws.receive() == 'trainSocket':
+			train_ai(ws)
+			ws.send('done')
+			break
+
+
 @app.route('/train', methods=['GET'])
-def train():
-	init_db()
-	train_ai()
-	return handle_500("Training en cours")
+def render_train():
+	return render_template('train.html')
 
 @app.errorhandler(werkzeug.exceptions.InternalServerError)
 def handle_500(error):

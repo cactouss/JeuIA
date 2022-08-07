@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content
+    %}
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" id="progress-bar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="1000">0</div>
+      </div>
+      <button onclick="startTrain()">Start train</button>
+
+      
+    {% endblock %}
+    {% block script %}
+    <script>
+        const socket = new WebSocket('ws://' + location.host + '/trainSocket');
+        function startTrain(){
+            
+            
+          socket.send('trainSocket');
+          }
+
+        let count = 0;
+        let width = 0;
+        let bar = document.getElementById('progress-bar');
+        
+          socket.addEventListener('message', ev => {
+            count++;
+            
+            if(count == 100){
+                width += 1;
+                bar.style.width = `${width}%`;
+                count = 0;
+            }
+            bar.innerHTML = Number(bar.innerHTML) + 1;
+          });
+    </script>
+    {% endblock %}
+

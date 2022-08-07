@@ -24,7 +24,7 @@ def espylon_greedy(eps,gameId):
 #         action = 0
 #     return action
 
-def train_ai(nb_games = 10):
+def train_ai(ws,nb_games = 10000):
     global eps 
     eps = 0.9
     """
@@ -33,29 +33,30 @@ def train_ai(nb_games = 10):
     actions = ['up','down','left','right']
     p1 = Player.query.get('AI1')
     p2 = Player.query.get('AI2')
-    game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,{'x':0,'y':4},{'x':4,'y':0},1)
-    db.session.add(game)
-    db.session.commit()
+    
     nb_move = 0
-    for _ in range(nb_games):
+    for game_number in range(nb_games):
+        game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,{'x':0,'y':4},{'x':4,'y':0},1)
+        db.session.add(game)
+        db.session.commit()
         is_finished = False
         #timer 
         start_time = time.time()
         while not is_finished:
             old_board = game.board
             new_position,new_board,is_finished = step(game.board,game.current_player,ast.literal_eval(game.player_1_pos),ast.literal_eval(game.player_2_pos),0.4,is_finished)
-            new_position_enemy , new_boardT1,is_finished = step(game.board,2 if game.current_player == 1 else 1,ast.literal_eval(game.player_1_pos),ast.literal_eval(game.player_2_pos),0.0,is_finished)
             game.board = new_board
             if game.current_player == 1:
                 game.player_1_pos = str(new_position)
             else:
                 game.player_2_pos = str(new_position)
             game.current_player = 2 if game.current_player == 1 else 1
-
+        
 
             
         #end timer
-        print("--- %s seconds ---" % (time.time() - start_time))
+        ws.send("Add a game")
+        print("--- %s seconds ---" % (time.time() - start_time) + " game number : " + str(game_number))
             
             
         game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,str({'x':0,'y':4}),str({'x':4,'y':0}),1)
