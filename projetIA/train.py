@@ -1,12 +1,12 @@
 import random
-from requests import session
 from .business import *
 from .models import *
 import copy
 import ast
 #import time
 import time
-
+LEARNING_RATE = 0.1 
+GAMMA = 0.9
 NB_GAEMES_EXPLORATION = 5000
 actions = ['up','down','left','right']
 def espylon_greedy(eps,gameId):
@@ -79,26 +79,38 @@ def step(board,player,player_1_pos,player_2_pos,eps,is_finished):
                 move = take_action(board,player_1_pos,player_2_pos,player,eps)
             new_position,new_board,captured_position,is_finished,winner  = handle_move(actions[move],player_1_pos if player == 1 else player_2_pos,board,player)
             
-            q_table_old = get_q_table(board, player_1_pos, player_2_pos, current_player)
+            q_table_old = get_q_table(board, player_1_pos, player_2_pos, player)
             
             if player == 1 : player_1_pos = new_position
             else : player_2_pos = new_position
 
-            q_table_new = get_q_table(board, player_1_pos, player_2_pos, current_player)
+            q_table_new = get_q_table(board, player_1_pos, player_2_pos, player)
             reward_max = q_table_new.get_max_expected_reward()
-            reward = len(captured_position)
+            reward = len(captured_position) + 1
 
             if winner != 0:
                 if winner == player: reward += 10
                 else : reward -= 10
                 
-            q_table_old.update(move,reward,reward_max)
+            update_q_table(q_table_old,move,reward,reward_max)
 
         except Exception as err:
             move_not_valid.add(move)
             player_pos = player_1_pos if player == 1 else player_2_pos
 
     return new_position,new_board,is_finished
+
+def update_q_table(q_table_old,action,reward,reward_max_new_state):
+    q_values = q_table_old.Q_values()
+    q_value = q_values[action]
+    q_value += LEARNING_RATE * (reward + GAMMA *reward_max_new_state - q_value)
+    if action == 1 : q_table_old.q_up = q_value
+    else:
+        if action == 2 : q_table_old.q_down = q_value
+        else:
+            if action == 3 : q_table_old.q_left = q_value
+            else: q_table_old.q_right = q_value
+    db.session.commit()
 
 def take_action(board,player_1_pos,player_2_pos,current_player,eps):
     if random.uniform(0, 1) < eps:
