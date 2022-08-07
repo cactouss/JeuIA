@@ -89,10 +89,12 @@ def result():
 @sock.route('/trainSocket', methods=['GET'])
 def train(ws):
 	while True :
-		if ws.receive() == 'trainSocket':
-			train_ai(ws)
+		data = ws.receive()
+		data = int(data)
+		if data in [10,100,1000,10000]:
+			train_ai(ws, data)
 			ws.send('done')
-			break
+
 
 
 @app.route('/train', methods=['GET'])
