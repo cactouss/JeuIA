@@ -105,11 +105,9 @@ def update_q_table(q_table_old,action,reward,reward_max_new_state):
     q_value = q_values[action]
     q_value += LEARNING_RATE * (reward + GAMMA *reward_max_new_state - q_value)
     if action == 1 : q_table_old.q_up = q_value
-    else:
-        if action == 2 : q_table_old.q_down = q_value
-        else:
-            if action == 3 : q_table_old.q_left = q_value
-            else: q_table_old.q_right = q_value
+    elif action == 2 : q_table_old.q_down = q_value
+    elif action == 3 : q_table_old.q_left = q_value
+    else: q_table_old.q_right = q_value
     db.session.commit()
 
 def take_action(board,player_1_pos,player_2_pos,current_player,eps):
