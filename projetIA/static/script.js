@@ -36,8 +36,10 @@ function updateBoardColors(player, newPosition, capturedPositions) {
 async function getMove() {
   try {
     const reponse = await axios.get("http://127.0.0.1:5000/move");
+    console.log(reponse.data);
     if (reponse.data.isFinished) {
-      window.location.href = "http://127.0.0.1:5000/result";
+      alert("game finished");
+      window.location.href = "http://127.0.0.1:5000/"
     } else {
       updateBoardColors(
         "player1",

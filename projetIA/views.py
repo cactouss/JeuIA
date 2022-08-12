@@ -1,5 +1,4 @@
-from mimetypes import init
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, session, jsonify
+from flask import Flask, render_template, request, url_for, flash, redirect, session, jsonify
 from flask_sock import Sock
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25506'
@@ -10,7 +9,7 @@ import werkzeug
 
 from .business import *
 from .train import train_ai,take_action
-from .models import init_db,db
+from .models import db,Game,Player,init_db
 actions = ['up','down','left','right']
 
 from uuid import uuid4
@@ -20,7 +19,6 @@ from uuid import uuid4
 
 min = 0
 max = 4
-data_games = {}
 scores = [
 	{'pseudo':'Isa','points':'100'},
 	{'pseudo':'ISA','points':'200'}
@@ -28,15 +26,24 @@ scores = [
 
 @app.route('/', methods=['GET','POST'])
 def index():
+	
 	if request.method == 'POST':
 		session['pseudo'] = request.form['pseudo']
 		if not session.get('pseudo'):
 			flash('Pseudo is required!')
 		else:
-			session['board'] = parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]])
-			session['player1pos'] = {'x':0,'y':4}
-			session['player2pos'] = {'x':4,'y':0}
-			session['uuid'] = uuid4()
+			p2 = Player.query.get('AI2')
+			p1 = Player.query.get(session['pseudo'])
+			if p1 is None:
+				p1 = Player(session['pseudo'],False)
+				db.session.add(p1)
+				db.session.commit()
+
+			print(Player.query.get(session['pseudo']))
+			game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,str({'x':0,'y':4}),str({'x':4,'y':0}),1)
+			db.session.add(game)
+			db.session.commit()
+			session['GameId'] = game.id
 			return redirect(url_for('game'))
 	return render_template('index.html', scores=scores)
 
@@ -47,7 +54,6 @@ def game():
 @app.route('/move', methods=['POST','GET'])
 def move():
 	if request.method == 'POST':
-		#print all the data of request.form
 		move = request.get_json()['move']
 		if not move:
 			raise Exception("Move is required")
@@ -63,29 +69,29 @@ def move():
 		is_valid = False
 		while not is_valid:
 			try : 
-				move = take_action(session['board'],session['player1pos'],session['player2pos'],1,1.0)
-				print(move)
+				game = Game.query.get(session['GameId'])
+				move = take_action(game.board,game.get_position('player1pos'),game.get_position('player2pos'),1,1.0)
 				result = do_move(actions[move], 'player1pos', 1);
-				is_valid = True
-				print(move," is ok")	
+				is_valid = True	
+				db.session.commit()
 			except Exception as err:
-				print("")
+				print(err)
 		return result
 
 def do_move(move,player_pos,player):
 	try :
-		new_position, board, captured_positions, is_finished, winner = handle_move(move,session[player_pos],session['board'],player);
+		
+		game = Game.query.get(session['GameId'])
+		
+		new_position, board, captured_positions, is_finished, winner = handle_move(move,game.get_position(player_pos),game.board,player);
 		print(f"new position : {new_position} , board : {board} , captured_positions : {captured_positions} , is_finished : {is_finished}")
-		session['board'] = board
-		session[player_pos] = new_position	
+		game.board = board
+		game.set_position(player_pos,new_position)
+		db.session.commit()
 		return {"newPosition":new_position,"isFinished":is_finished, "board":board,"capturedPositions":captured_positions}
 	except Exception as err:
 		raise Exception(err)
 	
-@app.route('/result', methods=['GET'])
-def result():
-	return render_template('result.html',player=session['pseudo'],board = session['board'])
-
 @sock.route('/trainSocket', methods=['GET'])
 def train(ws):
 	while True :

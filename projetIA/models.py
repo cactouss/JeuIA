@@ -2,7 +2,7 @@ import random
 from .views import app
 from flask_sqlalchemy import SQLAlchemy
 import logging as lg
-
+import ast
 
 db = SQLAlchemy(app,session_options={"autoflush": False})
 def init_db():
@@ -50,7 +50,16 @@ class Game(db.Model):
         self.player_1_pos = str(player_1_pos)
         self.player_2_pos = str(player_2_pos)
         self.current_player = current_player
-        
+    def get_position(self,position):
+        if position == "player2pos":
+            return ast.literal_eval(self.player_2_pos)
+        else:
+            return ast.literal_eval(self.player_1_pos)
+    def set_position(self,player,position):
+        if player == "player2pos":
+            self.player_2_pos = str(position)
+        else:
+            self.player_1_pos = str(position)
 
 class Q_table(db.Model):
     id = db.Column(db.String(200), primary_key=True)

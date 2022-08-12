@@ -1,28 +1,13 @@
 import random
 from .business import *
 from .models import *
-import copy
-import ast
-#import time
-import time
-LEARNING_RATE = 0.1 
-GAMMA = 0.9
-NB_GAEMES_EXPLORATION = 5000
-actions = ['up','down','left','right']
-def espylon_greedy(eps,gameId):
-    return eps if gameId < NB_GAEMES_EXPLORATION else eps * 0.995
 
-# def take_action(board,player_1_pos,player_2_pos,current_player, eps):
-#     """
-#     Take an action according to the epsilon-greedy policy
-#     """
-#     if random.uniform(0, 1) < eps:
-#         action = random.randint(0,3)
-#     else:
-        
-#         #TODO: Get the qTable value for the current state -> board + posPlayer1 + posPlayer2
-#         action = 0
-#     return action
+import ast
+
+import time
+LEARNING_RATE = 0.6
+GAMMA = 0.9
+actions = ['up','down','left','right']
 
 def train_ai(ws,nb_games = 10000):
     global eps 
@@ -30,11 +15,9 @@ def train_ai(ws,nb_games = 10000):
     """
     Train the AI
     """
-    actions = ['up','down','left','right']
     p1 = Player.query.get('AI1')
     p2 = Player.query.get('AI2')
     
-    nb_move = 0
     for game_number in range(nb_games):
         game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,{'x':0,'y':4},{'x':4,'y':0},1)
         db.session.add(game)
@@ -43,7 +26,6 @@ def train_ai(ws,nb_games = 10000):
         #timer 
         start_time = time.time()
         while not is_finished:
-            old_board = game.board
             new_position,new_board,is_finished = step(game.board,game.current_player,ast.literal_eval(game.player_1_pos),ast.literal_eval(game.player_2_pos),0.4,is_finished)
             game.board = new_board
             if game.current_player == 1:
@@ -85,7 +67,7 @@ def step(board,player,player_1_pos,player_2_pos,eps,is_finished):
             if player == 1 : player_1_pos = new_position
             else : player_2_pos = new_position
 
-            q_table_new = get_q_table(board, player_1_pos, player_2_pos, player)
+            q_table_new = get_q_table(new_board, player_1_pos, player_2_pos, player)
             reward_max = q_table_new.get_max_expected_reward()
             reward = len(captured_position) + 1
 
@@ -104,7 +86,7 @@ def step(board,player,player_1_pos,player_2_pos,eps,is_finished):
 def update_q_table(q_table_old,action,reward,reward_max_new_state):
     q_values = q_table_old.Q_values()
     q_value = q_values[action]
-    q_value += LEARNING_RATE * (reward + GAMMA *reward_max_new_state - q_value)
+    q_value += LEARNING_RATE * (reward + GAMMA * (- reward_max_new_state) - q_value)
     if action == 1 : q_table_old.q_up = q_value
     elif action == 2 : q_table_old.q_down = q_value
     elif action == 3 : q_table_old.q_left = q_value
