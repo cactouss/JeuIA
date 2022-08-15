@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, flash, redirect, session, jsonify
+from flask import Flask, render_template, request, url_for, flash, redirect, session
 from flask_sock import Sock
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'df0331cefc6c2b9a5d0208a726a5d1c0fd37324feba25506'
@@ -8,21 +8,10 @@ sock = Sock(app)
 import werkzeug
 
 from .business import *
-from .train import train_ai,take_action
+from .ai import train_ai,take_action
 from .models import db,Game,Player,init_db
 actions = ['up','down','left','right']
 
-from uuid import uuid4
-
-
-
-
-min = 0
-max = 4
-scores = [
-	{'pseudo':'Isa','points':'100'},
-	{'pseudo':'ISA','points':'200'}
-]
 
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -39,13 +28,12 @@ def index():
 				db.session.add(p1)
 				db.session.commit()
 
-			print(Player.query.get(session['pseudo']))
-			game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,str({'x':0,'y':4}),str({'x':4,'y':0}),1)
+			game = Game(parser_string([[0,0,0,0,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,0]]),p1.user_name,p2.user_name,str({'x':0,'y':4}),str({'x':4,'y':0}),2)
 			db.session.add(game)
 			db.session.commit()
 			session['GameId'] = game.id
 			return redirect(url_for('game'))
-	return render_template('index.html', scores=scores)
+	return render_template('index.html')
 
 @app.route('/game',methods=['GET'])
 def game():
@@ -67,15 +55,21 @@ def move():
 
 	if request.method == 'GET':
 		is_valid = False
+		move_not_valid = set([])
 		while not is_valid:
 			try : 
 				game = Game.query.get(session['GameId'])
-				move = take_action(game.board,game.get_position('player1pos'),game.get_position('player2pos'),1,1.0)
+				if len(move_not_valid) >= 1:
+					move = take_action(game.board,game.get_position('player1pos'),game.get_position('player2pos'),1,0.0)
+				else:
+					move = take_action(game.board,game.get_position('player1pos'),game.get_position('player2pos'),1,1.0)
+				print(actions[move])
 				result = do_move(actions[move], 'player1pos', 1);
 				is_valid = True	
-				db.session.commit()
 			except Exception as err:
 				print(err)
+				move_not_valid.add(move)
+				continue
 		return result
 
 def do_move(move,player_pos,player):
@@ -84,11 +78,10 @@ def do_move(move,player_pos,player):
 		game = Game.query.get(session['GameId'])
 		
 		new_position, board, captured_positions, is_finished, winner = handle_move(move,game.get_position(player_pos),game.board,player);
-		print(f"new position : {new_position} , board : {board} , captured_positions : {captured_positions} , is_finished : {is_finished}")
 		game.board = board
 		game.set_position(player_pos,new_position)
 		db.session.commit()
-		return {"newPosition":new_position,"isFinished":is_finished, "board":board,"capturedPositions":captured_positions}
+		return {"newPosition":new_position,"isFinished":is_finished, "board":board,"capturedPositions":captured_positions,"winner":winner}
 	except Exception as err:
 		raise Exception(err)
 	
@@ -107,9 +100,14 @@ def train(ws):
 def render_train():
 	return render_template('train.html')
 
+@app.route('/init', methods=['GET'])
+def init():
+	init_db()
+	return 'done'
+
 @app.errorhandler(werkzeug.exceptions.InternalServerError)
 def handle_500(error):
-	return 'Bad Move', 500
+	return 'Bad move', 500
 
 
 

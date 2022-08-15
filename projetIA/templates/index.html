@@ -15,11 +15,4 @@
   </div>
   <button class="btn btn-primary" type="submit">Jouer</button>
 </form>
-
-<div id="score-board">
-  <h1 class="text-white">Score board</h1>
-  {% for score in scores %}
-  <p class="text-white">{{score['pseudo']}}: <em>{{score['points']}}</em></p>
-  {% endfor %}
-</div>
 {% endblock %}

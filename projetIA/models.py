@@ -85,7 +85,8 @@ class Q_table(db.Model):
         q_values = self.Q_values()
         max_value = max(q_values)
         if max_value == 0:
-            return random.randint(0,3)
+            q_values = [x for x in q_values if x != 0]
+            return q_values.index(max(q_values)) if len(q_values) > 1 else random.randint(0,3)
         else:
             return q_values.index(max_value)
 

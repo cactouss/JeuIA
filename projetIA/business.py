@@ -3,7 +3,6 @@ import random
 def get_new_position(position,move_str,game_board):
     move = convert_move_str_to_object(move_str)
 
-    #Erreur ici string indices must be integers ?
     move['x']+= position['x']
     move['y']+= position['y']
 
@@ -72,9 +71,7 @@ def parse_list(board_str):
         for j in range(len(board_str[i])):
             board[i].append(int(board_str[i][j]))
     return board
-def enclosure(position,board):
-    #dans l'idéale return la list des positions nouvellement acquises
-    return []
+
 
 def handle_move(move,position,board,player):
 
@@ -207,6 +204,8 @@ def rectangle(x_min,x_max,y_min,y_max,board,player):
             y+=1
         y = y_min
         x += 1
+    for position in captured_positions:
+        copied_board[position['y']][position['x']] = player
     return copied_board,captured_positions
 
 def position_is_in_board(game_board,x,y):
